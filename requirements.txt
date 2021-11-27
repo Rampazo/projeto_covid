@@ -1,4 +1,6 @@
 Django
+gunicorn
 psycopg2
 openpyxl
 requests
+django-heroku
