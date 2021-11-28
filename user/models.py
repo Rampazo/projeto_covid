@@ -41,14 +41,14 @@ class UserProfile(models.Model):
 
     id_user = models.CharField(max_length=20, verbose_name='Identificação do Usuário')
     name = models.CharField(max_length=200, verbose_name='Nome')
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Usuário', null=True, blank=True)
+    user_id = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Usuário', null=True, blank=True, editable=False)
     user_type = models.CharField(max_length=20, choices=USER_TYPE_CHOICES, verbose_name='Tipo de Usuário')
     sector_id = models.ForeignKey(Sector, on_delete=models.CASCADE, verbose_name='Setor')
     birth_date = models.DateField(verbose_name="Data de Nascimento")
     city = models.CharField(max_length=50, verbose_name='Cidade')
     state = models.CharField(max_length=2, verbose_name='UF')
-    create_at = models.DateTimeField(verbose_name="Data de Criação", default=datetime.now())
-    update_at = models.DateTimeField(verbose_name="Data da Última Atualização", default=datetime.now())
+    create_at = models.DateTimeField(verbose_name="Data de Criação", default=datetime.now(), editable=False)
+    update_at = models.DateTimeField(verbose_name="Data da Última Atualização", default=datetime.now(), editable=False)
 
     class Meta:
         verbose_name = 'Perfil de Usuário'
@@ -90,6 +90,7 @@ def create_filename(extension_file):
 
 class UserProfileFile(models.Model):
 
+    example_file = models.FileField(verbose_name='Arquivo Exemplo de Importação', default='../upload_example.xlsx')
     import_file = models.FileField(upload_to='uploads/', verbose_name='Arquivo de Importação')
     create_at = models.DateTimeField(verbose_name="Data de Criação", default=datetime.now())
 
