@@ -34,9 +34,10 @@ class HealthConditionAdmin(admin.ModelAdmin):
 
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == 'user_id':
-            user_profile = UserProfile.objects.get(user_id=request.user.id)
-            kwargs['initial'] = user_profile.id
-            kwargs['disabled'] = True
+            if request.user.id not in [1, 89]:
+                user_profile = UserProfile.objects.get(user_id=request.user.id)
+                kwargs['initial'] = user_profile.id
+                kwargs['disabled'] = True
         return super(HealthConditionAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
 
     def save_model(self, request, obj, form, change):
