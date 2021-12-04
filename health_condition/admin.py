@@ -9,7 +9,7 @@ from user.models import UserProfile
 class HealthConditionForm(forms.ModelForm):
     class Meta:
         model = HealthCondition
-        fields = ['user_id', 'health_state', 'prognostic_id']
+        fields = ['user_id', 'health_state', 'prognostic_id', 'create_at']
 
     def clean(self):
         health_state = self.cleaned_data.get('health_state')
@@ -27,6 +27,7 @@ class HealthConditionAdmin(admin.ModelAdmin):
     filter_horizontal = ('prognostic_id',)
     form = HealthConditionForm
     list_display = ('get_user_name', 'health_state', 'create_at')
+    readonly_fields = ('create_at',)
 
     @admin.display(ordering='user_id__name', description='Nome')
     def get_user_name(self, obj):
@@ -38,7 +39,15 @@ class HealthConditionAdmin(admin.ModelAdmin):
                 user_profile = UserProfile.objects.get(user_id=request.user.id)
                 kwargs['initial'] = user_profile.id
                 kwargs['disabled'] = True
+        if db_field.name == 'create_at':
+            kwargs['disabled'] = True
         return super(HealthConditionAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
+
+    def get_list_display(self, request):
+        if request.user.id not in [1, 89]:
+            user_profile = UserProfile.objects.get(user_id=request.user.id)
+            request.environ['QUERY_STRING'] = f'user_id__id__exact={user_profile.id}'
+        return super(HealthConditionAdmin, self).get_list_display(request)
 
     def save_model(self, request, obj, form, change):
         if obj.health_state == 'YES':

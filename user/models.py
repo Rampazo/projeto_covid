@@ -90,7 +90,6 @@ def create_filename(extension_file):
 
 class UserProfileFile(models.Model):
 
-    # example_file = models.FileField(verbose_name='Arquivo Exemplo de Importação', default='../upload_example.xlsx')
     import_file = models.FileField(upload_to='uploads/', verbose_name='Arquivo de Importação')
     create_at = models.DateTimeField(verbose_name="Data de Criação", default=datetime.now())
 
